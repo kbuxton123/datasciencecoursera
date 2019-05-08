@@ -1,0 +1,167 @@
+---
+title: "Regression Models - Course Project"
+output: html_document
+---
+
+# Executive Summary
+
+This report is a course project within the Regression Models course on the Data Science Specialization by Johns Hopkins University on Coursera.
+
+We estimate the relationship between one variable (i.e. type of transmission (manual or automatic) and other independant variables, such as weight (wt), 1/4 miles/time (qsec), along with miles per gallon (MPG), which will be our outcome. Simply put we’re asking the question, which types of cars: manual or automatic transmission cars goes the furthest, using (mpg) as an indication.
+
+## Instructions
+We work for Motor Trend, a magazine about the automobile industry. Looking at a data set of a collection of cars, they are interested in exploring the relationship between a set of variables and miles per gallon (MPG) (outcome) We ask the following questions:
+
+Are automatic or manual transmission better for Miles Per Gallon (MPG)? Quantify the MPG difference between automatic and manual transmission cars
+
+Using simple linear regression model and multiple regression model we conclude that manual transmission cars when compared against automatic transmission cars adjusted by number of cylinders, gross horspower and weight gets a factor of 1.8 more miles per gallon (i.e. goes further).
+
+## Data Description
+We analyze the ‘mtcars’ data set through Regression Modelling and exploratory analysis to show how automatic (am = 0) and manual (am = 1) transmissions features affect the MPG feature. The dataset “mtcars” is located in the package “reshape2” first introduced in the Reshaping Data Course of the same Data Specialisation Course.
+
+The data was extracted from the 1974 Motor Trend US magazine, which comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).
+
+The data set consists of a data frame with 32 observations (nrow) and 11 variables (ncol).
+
+* mpg: Miles per US gallon
+* cyl: Number of cylinders
+* disp: Displacement (cubic inches)
+* hp: Gross horsepower
+* drat: Rear axle ratio
+* wt: Weight (lb / 1000)
+* qsec: 1 / 4 mile time
+* vs: V/S
+* am: Transmission (0 = automatic, 1 = manual)
+* gear: Number of forward gears
+* carb: Number of carburetors
+
+## Data processing and transformation
+We load in the data set, perform the necessary data transformations by factoring the necessary variables and look at the data, in the following section.
+
+Make the code always visible
+```{r}
+echo = TRUE
+```
+
+Set working directory
+setwd("~/Coursera/Regression Models")
+
+Set up the environment using the following code chunk
+```{r}
+rm(list=ls()) #remove all data store in the Data Environment
+#all the packages that we will use 
+library(ggplot2)
+```
+
+## Data Preparation
+We load in the data set, perform the necessary data transformations by factoring the necessary variables and look at the data, in this section.
+
+```{r}
+data(mtcars)
+mtcars$cyl <- factor(mtcars$cyl)
+mtcars$vs <- factor(mtcars$vs)
+mtcars$gear <- factor(mtcars$gear)
+mtcars$carb <- factor(mtcars$carb)
+mtcars$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
+str(mtcars)
+```
+
+## Exploratory Data Analysis
+In this section, we deep dive into our data and explore various relationships between variables of interest.
+
+Initially, we plot the relationships between all the variables of the dataset (see Figure 2 in the appendix). From the plot, we notice that variables like cyl, disp, hp, drat, wt, vs and am seem to have some strong correlation with mpg. But we will use linear models to quantify that in the subsequent regression analysis section.
+
+Since we are interested in the effects of car transmission type on mpg, we plot boxplots of the variable mpg when am is Automatic or Manual (see Figure 3 in the appendix). This plot clearly depicts an increase in the mpg when the transmission is Manual.
+
+## Regression Analysis
+In this section, we start building linear regression models based on the different variables and try to find out the best model fit and compare it with the base model which we have using anova. After model selection, we also perform analysis of residuals.
+
+## Model building and selection
+As mentioned, based on the pairs plot where several variables has high correlation with mpg, We build an initial model with all the variables as predictors, and perfom stepwise model selection to select significant predictors for the final model which is the best model. This is taken care by the step method which runs lm multiple times to build multiple regression models and select the best variables from them using both forward selection and backward elimination methods by the AIC algorithm. The code is depicted in the section below, you can run it to see the detailed computations if required.
+
+```{r}
+init_model <- lm(mpg ~ ., data = mtcars)
+best_model <- step(init_model, direction = "both")
+```
+
+The best model obtained from the above computations consists of the variables, cyl, wt and hp as confounders and am as the independent variable. Details of the model are depicted below.
+
+```{r}
+summary(best_model)
+```
+
+From the above, we observe that the “Adjusted R2 value”" is 0.84 which is the maximum obtained considering all combinations of variables. Thus, we can conclude that more than 84% of the variability is explained by the above model.
+
+Next, we use anova to compare aganist our base model, that only uses am as a predictor variable, and the best model that was found through performing stepwise selection.
+
+```{r}
+base_model <- lm(mpg ~ am, data = mtcars)
+anova(base_model, best_model)
+```
+
+As p-value is significant, hence we reject the null hypothesis that the variables cyl, hp and wt do not contribute to the accuracy of the model.
+
+## Inference
+We also perform a t-test assuming that the transmission data has a normal distribution and we clearly see that the manual and automatic transmissions are significatively different.
+
+```{r}
+t.test(mpg ~ am, data = mtcars)
+```
+
+## Residual and Diagnostics
+In the next section, we examine residual plots of our regression model and also compute some of the regression diagnostics of our model to uncover outliers in the data set.
+
+Multivariable regression model residuals
+
+```{r}
+par(mfrow = c(2, 2))
+plot(best_model)
+```
+
+From the above plots, we can make the following observations,
+
+* The points in the Residuals vs. Fitted plot seem to be randomly scattered on the plot and verify the independence condition.
+* The Normal Q-Q plot consists of the points which mostly fall on the line indicating that the residuals are normally distributed.
+* The Scale-Location plot consists of points scattered in a constant band pattern, indicating constant variance.
+* There are some distinct points of interest (outliers or leverage points) in the top right of the plots.
+* We now compute some regression diagnostics of our model to find out these interesting leverage points as shown in the following section. We compute top three points in each case of influence measures.
+
+```{r}
+leverage <- hatvalues(best_model)
+tail(sort(leverage),3)
+
+influential <- dfbetas(best_model)
+tail(sort(influential[,6]),3)
+```
+
+Looking at the above cars, we notice that our analysis was correct, as the same cars are mentioned in the residual plots.
+
+## Inference
+We also perform a t-test assuming that the transmission data has a normal distribution and we clearly see that the manual and automatic transmissions are significatively different.
+
+```{r}
+t.test(mpg ~ am, data = mtcars)
+```
+
+## Conclusion
+Based on the observations from our best fit model, we can conclude the following,
+
+* Cars with Manual transmission get more miles per gallon compared aganist cars with Automatic transmission. (1.8 adjusted by hp, cyl, and wt). mpg will decrease by 2.5 (adjusted by hp, cyl, and am) for every 1000 lb increase in wt.
+* mpg decreases negligibly with increase of hp.
+* If number of cylinders, cyl increases from 4 to 6 and 8, mpg will decrease by a factor of 3 and 2.2 respectively (adjusted by hp, wt, and am).
+
+## Appendix
+Boxplot of MPG vs. Transmission
+```{r}
+boxplot(mpg ~ am, data=mtcars, col=(c("gold","darkgreen")), xlab="Transmission (0 = Automatic, 1 = Manual)", ylab="Miles per Gallon", main="Boxplot of MPG vs. Transmission")
+```
+
+Boxplot of Mileage by Cylinder
+```{r}
+boxplot(mtcars$mpg ~ mtcars$cyl, data=mtcars, outpch = 19, col=(c("blue", "green", "yellow")), ylab="miles per gallon", xlab="number of cylinders", main="Mileage by Cylinder")
+```
+
+Scatter plot matrix for mtcars dataset
+```{r}
+pairs(mpg ~ ., data = mtcars)
+```
