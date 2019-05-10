@@ -382,22 +382,22 @@ $(document).ready(function () {
 <h2>Question 1</h2>
 <p>Which of the following are components in building a machine learning algorithm?</p>
 <ul>
+<li>Training and test sets</li>
+<li>Statistical inference</li>
+<li>Collecting data to answer the question</li>
 <li>Artificial intelligence</li>
 <li>Machine learning</li>
-<li>Training and test sets</li>
-<li>Creating features.</li>
-<li>Statistical inference</li>
 </ul>
-<p><strong>Answer</strong> : The Creating features are components in building a machine learning algorithm.</p>
+<p><strong>Answer</strong> : Collecting data to answer the question</p>
 </div>
 <div id="question-2" class="section level2">
 <h2>Question 2</h2>
 <p>Suppose we build a prediction algorithm on a data set and it is 100% accurate on that data set. Why might the algorithm not work well if we collect a new data set?</p>
 <ul>
-<li>We have too few predictors to get good out of sample accuracy.</li>
-<li>Our algorithm may be overfitting the training data, predicting both the signal and the noise.</li>
 <li>We may be using a bad algorithm that doesn’t predict well on this kind of data.</li>
+<li>We have too few predictors to get good out of sample accuracy.</li>
 <li>We have used neural networks which has notoriously bad performance.</li>
+<li>Our algorithm may be overfitting the training data, predicting both the signal and the noise.</li>
 </ul>
 <p><strong>Answer</strong> : Our algorithm may be overfitting the training data, predicting both the signal and the noise.</p>
 </div>
@@ -405,10 +405,10 @@ $(document).ready(function () {
 <h2>Question 3</h2>
 <p>What are typical sizes for the training and test sets?</p>
 <ul>
-<li>90% training set, 10% test set</li>
 <li>0% training set, 100% test set.</li>
-<li>50% in the training set, 50% in the testing set.</li>
 <li>80% training set, 20% test set</li>
+<li>90% training set, 10% test set</li>
+<li>50% in the training set, 50% in the testing set.</li>
 </ul>
 <p><strong>Answer</strong> : 80% training set, 20% test set.</p>
 </div>
@@ -416,10 +416,10 @@ $(document).ready(function () {
 <h2>Question 4</h2>
 <p>What are some common error rates for predicting binary variables (i.e. variables with two possible values like yes/no, disease/normal, clicked/didn’t click)? Check the correct answer(s).</p>
 <ul>
-<li>Predictive value of a positive</li>
 <li>Correlation</li>
 <li>Root mean squared error</li>
 <li>Median absolute deviation</li>
+<li>Predictive value of a positive</li>
 <li>R^2</li>
 </ul>
 <p><strong>Answer</strong> : Predictive value of a positive.</p>
@@ -428,12 +428,12 @@ $(document).ready(function () {
 <h2>Question 5</h2>
 <p>Suppose that we have created a machine learning algorithm that predicts whether a link will be clicked with 99% sensitivity and 99% specificity. The rate the link is clicked is 1/1000 of visits to a website. If we predict the link will be clicked on a specific visit, what is the probability it will actually be clicked?</p>
 <ul>
-<li>99%</li>
-<li>99.9%</li>
 <li>50%</li>
+<li>89.9%</li>
+<li>0.009%</li>
 <li>9%</li>
 </ul>
-<p><strong>Answer</strong> : y definition we have : sensivity=TPTP+FN specificity=TNTN+FP prevalence=TP+FNTP+FN+TN+FP</p>
+<p><strong>Answer</strong> : y definition we have : * sensivity=TPTP+FN * specificity=TNTN+FP * prevalence=TP+FNTP+FN+TN+FP</p>
 <p>and we know that :</p>
 <ol style="list-style-type: decimal">
 <li>TP=(TP+FN).sensitivity, FP=(TN+FP).(1−specificity)</li>
@@ -442,9 +442,9 @@ $(document).ready(function () {
 </ol>
 <p>We want to compute : p = Pr(click +|test click +) = TPTP+FP</p>
 <ul>
-<li><p>p=specificity.prevalencesensitivity.prevalence+(1−specificity).(1−prevalence)</p>
-<p>So p=10−3.0.9910−3.0.99+0.01∗0.999 ~ 9%.</p></li>
+<li>p=specificity.prevalencesensitivity.prevalence+(1−specificity).(1−prevalence)</li>
 </ul>
+<p>So p=10−3.0.9910−3.0.99+0.01∗0.999 ~ <strong>9%</strong></p>
 </div>
 
 
